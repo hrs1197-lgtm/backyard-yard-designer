@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Backyard Monsters Yard Designer</title>
+  <script src="https://cdn.jsdelivr.net/npm/konva@9.4.0/konva.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+    }
+    #container {
+      width: 600px;
+      height: 600px;
+      margin: 20px auto;
+      border: 1px solid black;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Backyard Monsters Yard Designer</h1>
+  <p>Click a cell to place: Empty → Wall → Tower → Empty</p>
+  <div id="container"></div>
+  <button id="exportBtn">Download Design as PNG</button>
+
+  <script>
+  // Wait for the DOM to load
+  document.addEventListener("DOMContentLoaded", function() {
+    var stage = new Konva.Stage({
+      container: 'container',
+      width: 600,
+      height: 600
+    });
+
+    var layer = new Konva.Layer();
+    stage.add(layer);
+
+    var gridSize = 30;
+    var rows = 20;
+    var cols = 20;
+
+    // Create grid
+    for (var i = 0; i < rows; i++) {
+      for (var j = 0; j < cols; j++) {
+        var rect = new Konva.Rect({
+          x: j * gridSize,
+          y: i * gridSize,
+          width: gridSize,
+          height: gridSize,
+          fill: '#e0e0e0', // empty
+          stroke: '#aaa',
+          strokeWidth: 1
+        });
+
+        // Click to toggle: empty → wall → tower → empty
+        rect.on('click', function() {
+          if (this.fill() === '#e0e0e0') {
+            this.fill('#444'); // wall
+          } else if (this.fill() === '#444') {
+            this.fill('#ff9800'); // tower
+          } else {
+            this.fill('#e0e0e0'); // empty
+          }
+          layer.draw();
+        });
+
+        layer.add(rect);
+      }
+    }
+
+    layer.draw();
+
+    // Export button
+    document.getElementById('exportBtn').addEventListener('click', function() {
+      var dataURL = stage.toDataURL({ pixelRatio: 2 });
+      var link = document.createElement('a');
+      link.download = 'yard-design.png';
+      link.href = dataURL;
+      link.click();
+    });
+  });
+  </script>
+</body>
+</html>
